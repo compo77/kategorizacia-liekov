@@ -1,0 +1,7 @@
+.git
+.venv
+.venv-dev
+.venv-prod
+__pycache__
+.pytest_cache
+*.py[cod]

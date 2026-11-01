@@ -1,0 +1,6 @@
+default: B01AB05
+groups:
+  B01AB05:
+    name: Enoxaparín
+  B01AB06:
+    name: Nadroparín
