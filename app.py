@@ -2,17 +2,19 @@ from flask import Flask, render_template, request
 
 from medicine_comparison.config import ATC_GROUPS, DEFAULT_ATC
 from medicine_comparison.service import ComparisonService
-from medicine_comparison.source import PERIOD_PATTERN, SourceError
+from medicine_comparison.source import (
+    PERIOD_PATTERN,
+    SourceError,
+    ministry_listings_url,
+)
 
 
 def _format_eur(value, signed: bool = False) -> str:
     if value is None:
         return "—"
-    formatted = (
-        f"{abs(value):,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
-    )
+    formatted = f"{abs(value):,.2f}"
     prefix = ("−" if value < 0 else "+") if signed else ""
-    return f"{prefix}{formatted} €"
+    return f"{prefix}€{formatted}"
 
 
 def create_app() -> Flask:
@@ -32,8 +34,9 @@ def create_app() -> Flask:
         if previous_period is not None and not PERIOD_PATTERN.fullmatch(
             previous_period
         ):
-            return "Obdobie musí mať formát YYYYMM.", 400
+            return "Period must use the YYYYMM format.", 400
         service: ComparisonService = app.extensions["comparison_service"]
+        source_url = ministry_listings_url()
         try:
             comparison = service.get_comparison(atc_code, previous_period)
         except SourceError as error:
@@ -45,6 +48,7 @@ def create_app() -> Flask:
                     atc_code=atc_code,
                     atc_groups=ATC_GROUPS,
                     previous_period=previous_period,
+                    source_url=source_url,
                 ),
                 503,
             )
@@ -55,6 +59,7 @@ def create_app() -> Flask:
             atc_code=atc_code,
             atc_groups=ATC_GROUPS,
             previous_period=previous_period,
+            source_url=source_url,
         )
 
     @app.get("/healthz")

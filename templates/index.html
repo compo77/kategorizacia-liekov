@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="sk">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f3ee">
-    <title>{{ atc_code }} | Ceny a doplatky</title>
+    <title>{{ atc_code }} | Prices and co-payments</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -13,72 +13,72 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="/" aria-label="Porovnanie liekov, úvodná stránka">
+      <a class="brand" href="/" aria-label="Medicine price comparison, home page">
         <span class="brand-mark" aria-hidden="true">+</span>
-        <span>Lieky <span class="brand-muted">/ prehľad cien</span></span>
+        <span>Medicines <span class="brand-muted">/ price overview</span></span>
       </a>
-      <a class="source-link" href="https://www.health.gov.sk/?kategorizacia-a-ceny" target="_blank" rel="noreferrer">
-        Zdroj: MZ SR <span aria-hidden="true">↗</span>
+      <a class="source-link" href="{{ source_url }}" target="_blank" rel="noreferrer">
+        Source: Ministry of Health <span aria-hidden="true">↗</span>
       </a>
     </header>
 
     <main>
       <section class="intro" aria-labelledby="page-title">
         <div class="intro-copy">
-          <p class="eyebrow">KATEGORIZOVANÉ LIEKY <span></span> ATC {{ atc_code }}</p>
+          <p class="eyebrow">CATEGORIZED MEDICINES <span></span> ATC {{ atc_code }}</p>
           <h1 id="page-title">{{ atc_groups[atc_code] }}</h1>
-          <p class="lede">Porovnanie cien a doplatkov balení vo vybraných zoznamoch Ministerstva zdravotníctva SR.</p>
+          <p class="lede">Compare prices and patient co-payments across selected medicine lists published by the Ministry of Health.</p>
         </div>
-        <div class="atc-stamp" aria-label="ATC skupina {{ atc_code }}">
-          <span>ATC SKUPINA</span>
+        <div class="atc-stamp" aria-label="ATC group {{ atc_code }}">
+          <span>ATC GROUP</span>
           <strong>{{ atc_code }}</strong>
         </div>
       </section>
 
       {% if error %}
       <section class="notice notice-error" role="alert">
-        <strong>Údaje sa nepodarilo načítať</strong>
-        <p>{{ error }} Skúste stránku obnoviť neskôr.</p>
+        <strong>Could not load data</strong>
+        <p>{{ error }} Please try refreshing the page later.</p>
       </section>
       {% else %}
-      <section class="overview" aria-label="Obdobia porovnania">
+      <section class="overview" aria-label="Comparison periods">
         <div class="period-block">
-          <span class="section-label">NAJNOVŠÍ ZOZNAM</span>
+          <span class="section-label">LATEST LIST</span>
           <a href="{{ comparison.latest.url }}" target="_blank" rel="noreferrer" class="period-value">
             {{ comparison.latest.title }} <span aria-hidden="true">↗</span>
           </a>
         </div>
         <div class="period-divider" aria-hidden="true"></div>
         <div class="period-block">
-          <span class="section-label">POROVNÁVACÍ ZOZNAM</span>
+          <span class="section-label">COMPARISON LIST</span>
           <a href="{{ comparison.previous.url }}" target="_blank" rel="noreferrer" class="period-value">
             {{ comparison.previous.title }} <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <div class="overview-count"><strong>{{ comparison.rows|length }}</strong><span>balení na porovnanie</span></div>
+        <div class="overview-count"><strong>{{ comparison.rows|length }}</strong><span>packages compared</span></div>
       </section>
 
       <section class="data-section" aria-labelledby="table-title">
         <div class="table-heading">
           <div>
-            <p class="eyebrow">CENA · ÚHRADA · DOPLATOK</p>
-            <h2 id="table-title">Porovnanie balení</h2>
+            <p class="eyebrow">PRICE · REIMBURSEMENT · CO-PAYMENT</p>
+            <h2 id="table-title">Package comparison</h2>
           </div>
           <div class="table-controls">
             <form class="atc-picker" action="/" method="get">
-              <label for="atc-select">ATC skupina</label>
+              <label for="atc-select">ATC group</label>
               <select id="atc-select" name="atc">
                 {% for code, name in atc_groups.items() %}
                 <option value="{{ code }}" {% if code == atc_code %}selected{% endif %}>{{ code }} · {{ name }}</option>
                 {% endfor %}
               </select>
-              <label for="previous-period">Obdobie</label>
-              <input id="previous-period" name="previous" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="predošlé" value="{{ previous_period or '' }}" aria-label="Porovnávacie obdobie vo formáte RRRRMM">
-              <button type="submit" aria-label="Zobraziť vybranú ATC skupinu">Zobraziť</button>
+              <label for="previous-period">Period</label>
+              <input id="previous-period" name="previous" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="previous (YYYYMM)" value="{{ previous_period or '' }}" aria-label="Comparison period in YYYYMM format">
+              <button type="submit" aria-label="Show selected ATC group">Show</button>
             </form>
             <label class="search-box">
               <span class="search-icon" aria-hidden="true">⌕</span>
-              <input id="medicine-search" type="search" placeholder="Hľadať liek alebo kód" autocomplete="off" aria-label="Hľadať liek alebo kód">
+              <input id="medicine-search" type="search" placeholder="Search medicines or codes" autocomplete="off" aria-label="Search medicines or codes">
             </label>
           </div>
         </div>
@@ -87,16 +87,16 @@
           <table>
             <thead>
               <tr>
-                <th scope="col" class="medicine-column">Liek a balenie</th>
-                <th scope="col">Kód</th>
-                <th scope="col" class="numeric">Cena teraz</th>
-                <th scope="col" class="numeric">Cena predtým</th>
-                <th scope="col" class="numeric">Zmena ceny</th>
-                <th scope="col" class="numeric">ÚZP teraz</th>
-                <th scope="col" class="numeric">ÚZP predtým</th>
-                <th scope="col" class="numeric">DOP teraz</th>
-                <th scope="col" class="numeric">DOP predtým</th>
-                <th scope="col" class="numeric">Zmena DOP</th>
+                <th scope="col" class="medicine-column">Medicine and package</th>
+                <th scope="col">Code</th>
+                <th scope="col" class="numeric">Price now</th>
+                <th scope="col" class="numeric">Price before</th>
+                <th scope="col" class="numeric">Price change</th>
+                <th scope="col" class="numeric">Official price now</th>
+                <th scope="col" class="numeric">Official price before</th>
+                <th scope="col" class="numeric">Co-pay now</th>
+                <th scope="col" class="numeric">Co-pay before</th>
+                <th scope="col" class="numeric">Co-pay change</th>
               </tr>
             </thead>
             <tbody id="medicine-rows">
@@ -118,23 +118,23 @@
                 <td class="numeric copay-value">{{ row.current.copay|money if row.current else '—' }}</td>
                 <td class="numeric previous-value">{{ row.previous.copay|money if row.previous else '—' }}</td>
                 <td class="numeric change-value {% if row.copay_change is not none and row.copay_change < 0 %}change-down{% elif row.copay_change is not none and row.copay_change > 0 %}change-up{% endif %}">
-                  {{ row.copay_change|signed_money if row.copay_change is not none else ('Nové' if row.status == 'new' else 'Vyradené' if row.status == 'removed' else '—') }}
+                  {{ row.copay_change|signed_money if row.copay_change is not none else ('New' if row.status == 'new' else 'Removed' if row.status == 'removed' else '—') }}
                 </td>
               </tr>
               {% else %}
-              <tr><td colspan="10" class="empty-state">V skupine {{ atc_code }} sa nenašli žiadne lieky.</td></tr>
+              <tr><td colspan="10" class="empty-state">No medicines found in group {{ atc_code }}.</td></tr>
               {% endfor %}
             </tbody>
           </table>
-          <p class="no-results" id="no-results" hidden>Vyhľadávaniu nezodpovedá žiadne balenie.</p>
+          <p class="no-results" id="no-results" hidden>No packages match your search.</p>
         </div>
-        <p class="footnote">Cena a DOP sú uvedené v EUR za celé balenie, podľa zverejnených zoznamov. ÚZP znamená úradne určenú cenu; v tejto tabuľke je zobrazený doplatok pacienta (DOP).</p>
+        <p class="footnote">Prices and co-payments are shown in euros per package, based on the published lists. Official price (ÚZP) is the regulated price; co-pay (DOP) is the patient's payment.</p>
       </section>
       {% endif %}
     </main>
     <footer>
-      <span>Údaje preberá aplikácia z verejných súborov MZ SR.</span>
-      <span>Informatívny prehľad, nie odporúčanie na liečbu.</span>
+      <span>Data is sourced from publicly available Ministry of Health files.</span>
+      <span>For information only; not a medical recommendation.</span>
     </footer>
   </body>
 </html>
