@@ -1,7 +1,5 @@
 # Medicine Price Comparison for ATC B01AB05
 
-**English** | [Slovenčina](README.sk.md)
-
 A simple web application with no database. It finds the two most recent lists of categorized medicines in the archive of the Slovak Ministry of Health, downloads their Excel files, and compares medicine prices and patient co-payments for the selected ATC group. Available groups and the default selection are defined in `config/atc_groups.yaml`; adding a group to this file automatically makes it available in the selector. Data is kept only in process memory for four hours. If the source is temporarily unavailable, the running process retains the last successful result.
 
 For example, a direct link to nadroparin is `/?atc=B01AB06`.
@@ -29,7 +27,6 @@ Keep the other groups in the existing file and set `default` to one of the confi
 ├── Dockerfile
 ├── Makefile
 ├── README.md
-├── README.sk.md
 ├── app.py
 ├── config/
 │   └── atc_groups.yaml
@@ -76,6 +73,8 @@ make run
 ```
 
 The application will be available at `http://localhost:8080`. The first page load downloads spreadsheets from the Ministry's website.
+The listings page defaults to `https://www.health.gov.sk/odbornik/kategorizacia-a-cenotvorba/kategorizacia-liekov/zoznam-kategorizovanych-liekov/`.
+To use a different page, set `MINISTRY_LISTINGS_URL` in the app's environment before starting it.
 
 ## Build and run the production Docker image locally
 
